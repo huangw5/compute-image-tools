@@ -66,7 +66,7 @@ func imageExists(client daisyCompute.Client, project, family, name string) (bool
 			return false, typedErr(apiError, "failed to get image from family", err)
 		}
 		if img.Deprecated != nil {
-			if img.Deprecated.State == "OBSOLETE" || img.Deprecated.State == "DELETED" {
+			if img.Deprecated.State == "DELETED" {
 				return true, typedErrf(imageObsoleteDeletedError, "image %q in state %q", img.Name, img.Deprecated.State)
 			}
 		}
@@ -92,7 +92,7 @@ func imageExists(client daisyCompute.Client, project, family, name string) (bool
 
 	for _, i := range imageCache.exists[project] {
 		if name == i.Name {
-			if i.Deprecated != nil && (i.Deprecated.State == "OBSOLETE" || i.Deprecated.State == "DELETED") {
+			if i.Deprecated != nil && i.Deprecated.State == "DELETED" {
 				return true, typedErrf(imageObsoleteDeletedError, "image %q in state %q", name, i.Deprecated.State)
 			}
 			return true, nil
